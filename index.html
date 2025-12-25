@@ -7,8 +7,520 @@
     <title>Chinmaya Vidyalaya</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
     <link rel="icon" href="../vortex-logo.png"/>
+    <style>
+        /* ================================================================
+           CHINMAYA VIDYALAYA - MEGA SCHOOL MANAGEMENT SYSTEM
+           COMPLETE SINGLE-FILE VERSION (HTML + CSS + JS)
+           ================================================================ */
+
+        /* BASE RESET & SETUP */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        html, body { height: 100vh; width: 100vw; overflow: hidden; }
+
+        /* CSS VARIABLES */
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --tertiary: #f093fb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f9fafb;
+            --bg-dark: #0f172a;
+            --border: #e5e7eb;
+            --border-dark: #334155;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --transition-base: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: var(--transition-base);
+        }
+
+        body.dark-theme {
+            background: var(--bg-dark);
+            color: #f1f5f9;
+        }
+
+        /* UTILITY CLASSES */
+        .hidden { display: none !important; }
+        .visible { display: block !important; }
+
+        /* SCROLL PROGRESS BAR */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--tertiary));
+            z-index: 100001;
+            transition: width 0.1s linear;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.5);
+        }
+
+        /* SCROLL TO TOP BUTTON */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 99998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-to-top.visible { opacity: 1; visibility: visible; }
+
+        .scroll-to-top:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* QUICK ACCESS MENU */
+        .quick-access {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 99997;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .quick-access.visible { opacity: 1; visibility: visible; }
+
+        .quick-btn {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        body.dark-theme .quick-btn {
+            background: rgba(30, 41, 59, 0.95);
+            border-color: var(--border-dark);
+        }
+
+        .quick-btn:hover {
+            transform: scale(1.15);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* THEME TOGGLE BUTTON */
+        .theme-toggle-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 99999;
+        }
+
+        .theme-toggle-btn {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            color: white;
+            font-size: 1.3rem;
+        }
+
+        .theme-toggle-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        /* YOUTUBE BUTTON */
+        .youtube-button {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #FF0000, #CC0000);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 30px rgba(255, 0, 0, 0.4);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            overflow: hidden;
+            z-index: 99998;
+            text-decoration: none;
+            animation: youtube-pulse 2s infinite;
+        }
+
+        .youtube-icon {
+            font-size: 1.8rem;
+            color: white;
+            transition: all 0.4s ease;
+            z-index: 2;
+        }
+
+        .youtube-text {
+            position: absolute;
+            left: 70px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: white;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+        }
+
+        .youtube-button:hover {
+            width: 200px;
+            border-radius: 50px;
+            box-shadow: 0 12px 40px rgba(255, 0, 0, 0.7);
+        }
+
+        .youtube-button:hover .youtube-text {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .youtube-button:active { transform: scale(0.95); }
+
+        @keyframes youtube-pulse {
+            0%, 100% { box-shadow: 0 8px 30px rgba(255, 0, 0, 0.4); }
+            50% { box-shadow: 0 8px 35px rgba(255, 0, 0, 0.6), 0 0 0 10px rgba(255, 0, 0, 0.1); }
+        }
+
+        .youtube-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+            opacity: 0;
+        }
+
+        .youtube-button:hover::before {
+            opacity: 1;
+            top: -100%;
+            right: -100%;
+        }
+
+        /* DARK THEME FIXES */
+        body.dark-theme .card,
+        body.dark-theme .stat-card,
+        body.dark-theme .modal-content,
+        body.dark-theme .toast {
+            background: #1e293b;
+            color: #f1f5f9;
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-theme .border { border-color: var(--border-dark); }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .youtube-button { left: 15px; bottom: 90px; width: 50px; height: 50px; }
+            .youtube-button:hover { width: 170px; }
+        }
+
+        @media print {
+            .theme-toggle-container, .scroll-to-top, .quick-access, .youtube-button,
+            .btn-logout, .btn-change-password, .search-overlay, .shortcuts-overlay,
+            .toast-container { display: none !important; }
+            body { background: white !important; color: black !important; }
+        }
+
+        /* LOGIN PAGE */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .login-box {
+            background: white;
+            padding: 3rem 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        body.dark-theme .login-box {
+            background: #1e293b;
+            color: #f1f5f9;
+        }
+
+        .logo-3d { font-size: 5rem; margin-bottom: 1rem; color: var(--primary); }
+        .school-name h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+        .school-name p { color: var(--text-light); }
+
+        .user-type-selector {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .user-type-btn {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-type-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        body.dark-theme .user-type-btn {
+            background: #334155;
+            color: #f1f5f9;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 0.9rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover { background: var(--secondary); }
+
+        /* DASHBOARD & PAGES */
+        .dashboard, .full-page {
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        body.dark-theme .dash-header {
+            background: #1e293b;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .dash-content, .page-content {
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .menu-card {
+            background: white;
+            padding: 1.8rem;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        body.dark-theme .menu-card {
+            background: #1e293b;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .menu-card-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            font-size: 2rem;
+            color: white;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 100000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        body.dark-theme .modal-content {
+            background: #1e293b;
+            color: #f1f5f9;
+        }
+
+        /* TOAST */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-width: 300px;
+            animation: slideInRight 0.3s ease-out;
+            border-left: 4px solid var(--primary);
+        }
+
+        body.dark-theme .toast {
+            background: #1e293b;
+            color: #f1f5f9;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .menu-grid { grid-template-columns: 1fr; }
+            .dash-header { flex-direction: column; gap: 1rem; }
+        }
+    </style>
 </head>
 <body>
     <!-- SCROLL PROGRESS BAR -->
@@ -17,24 +529,110 @@
     <!-- TOAST CONTAINER -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- KEYBOARD SHORTCUTS OVERLAY -->
-    <div class="shortcuts-overlay" id="shortcutsOverlay">
-        <div class="shortcuts-content">
-            <h2 style="margin-bottom: 1.5rem;">
-                <i class="fas fa-keyboard"></i> Keyboard Shortcuts
-            </h2>
-            <div class="shortcut-item">
-                <span><i class="fas fa-question-circle"></i> View Shortcuts</span>
-                <span class="shortcut-key">?</span>
+    <!-- SCROLL TO TOP BUTTON -->
+    <button class="scroll-to-top" id="scrollToTop" onclick="scrollToTop()" aria-label="Scroll to Top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- QUICK ACCESS MENU -->
+    <div class="quick-access" id="quickAccess">
+        <button class="quick-btn" onclick="scrollToTop()" title="Scroll to Top">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        <button class="quick-btn" onclick="toggleTheme()" title="Toggle Theme">
+            <i class="fas fa-adjust"></i>
+        </button>
+    </div>
+
+    <!-- THEME TOGGLE -->
+    <div class="theme-toggle-container">
+        <button class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle Theme">
+            <i class="fas fa-moon theme-icon"></i>
+        </button>
+    </div>
+
+    <!-- YOUTUBE BUTTON -->
+    <a href="https://www.youtube.com/@chinmayavidyalayabokaro9965" target="_blank" class="youtube-button">
+        <i class="fab fa-youtube youtube-icon"></i>
+        <span class="youtube-text">YOUTUBE</span>
+    </a>
+
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <div style="text-align: center;">
+                <div class="logo-3d">
+                    <div class="om-symbol">ॐ</div>
+                </div>
+                <div class="school-name">
+                    <h1>Chinmaya Vidyalaya</h1>
+                    <p>Bokaro Steel City</p>
+                </div>
             </div>
-            <div class="shortcut-item">
-                <span><i class="fas fa-arrow-up"></i> Scroll to Top</span>
-                <span class="shortcut-key">↑ ↑</span>
+
+            <div class="user-type-selector">
+                <button class="user-type-btn active" onclick="selectUserType('student')">Student</button>
+                <button class="user-type-btn" onclick="selectUserType('teacher')">Teacher</button>
             </div>
-            <div class="shortcut-item">
-                <span><i class="fas fa-home"></i> Go to Dashboard</span>
-                <span class="shortcut-key">Ctrl + H</span>
+
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>User ID</label>
+                    <input type="text" id="userId" placeholder="e.g. 3A001 or T001" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+
+            <div id="loginAlert" class="hidden" style="margin-top: 1rem; color: #ef4444;"></div>
+        </div>
+    </div>
+
+    <!-- STUDENT DASHBOARD -->
+    <div id="studentDashboard" class="dashboard hidden">
+        <div class="dash-header">
+            <h1>Student Portal</h1>
+            <div>
+                <span id="studentName"></span>
+                <button onclick="logout()">Logout</button>
             </div>
+        </div>
+        <div class="dash-content">
+            <h2>Welcome, <span id="studentWelcome"></span>!</h2>
+            <!-- Add your menu cards here -->
+            <div class="menu-grid">
+                <div class="menu-card" onclick="alert('Assignments page')">Assignments</div>
+                <div class="menu-card" onclick="alert('Attendance')">Attendance</div>
+                <!-- ... other cards ... -->
+            </div>
+        </div>
+    </div>
+
+    <!-- TEACHER DASHBOARD -->
+    <div id="teacherDashboard" class="dashboard hidden">
+        <div class="dash-header">
+            <h1>Teacher Portal</h1>
+            <div>
+                <span id="teacherName"></span>
+                <button onclick="logout()">Logout</button>
+            </div>
+        </div>
+        <div class="dash-content">
+            <h2>Welcome, <span id="teacherWelcome"></span>!</h2>
+            <!-- Teacher menu cards -->
+        </div>
+    </div>
+
+    <!-- CHANGE PASSWORD MODAL -->
+    <div id="changePasswordModal" class="modal">
+        <div class="modal-content">
+            <h2>Change Password</h2>
+            <form onsubmit="handleChangePassword(event)">
+                <input type="password" id="currentPassword" placeholder="Current Password" required>
+                <input type="password" id="newPassword" placeholder="New Password" req            </div>
             <div class="shortcut-item">
                 <span><i class="fas fa-adjust"></i> Toggle Theme</span>
                 <span class="shortcut-key">Ctrl + Shift + T</span>
