@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Chinmaya Vidyalaya School Management System">
+    <title>Chinmaya Vidyalaya</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="../vortex-logo.png"/>
+</head>
+<body>
+    <!-- SCROLL PROGRESS BAR -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- KEYBOARD SHORTCUTS OVERLAY -->
+    <div class="shortcuts-overlay" id="shortcutsOverlay">
+        <div class="shortcuts-content">
+            <h2 style="margin-bottom: 1.5rem;">
+                <i class="fas fa-keyboard"></i> Keyboard Shortcuts
+            </h2>
+            <div class="shortcut-item">
+                <span><i class="fas fa-question-circle"></i> View Shortcuts</span>
+                <span class="shortcut-key">?</span>
+            </div>
+            <div class="shortcut-item">
+                <span><i class="fas fa-arrow-up"></i> Scroll to Top</span>
+                <span class="shortcut-key">↑ ↑</span>
+            </div>
+            <div class="shortcut-item">
+                <span><i class="fas fa-home"></i> Go to Dashboard</span>
+                <span class="shortcut-key">Ctrl + H</span>
+            </div>
+            <div class="shortcut-item">
+                <span><i class="fas fa-adjust"></i> Toggle Theme</span>
+                <span class="shortcut-key">Ctrl + Shift + T</span>
+            </div>
+            <div class="shortcut-item">
+                <span><i class="fas fa-sign-out-alt"></i> Logout</span>
+                <span class="shortcut-key">Ctrl + L</span>
+            </div>
+            <div class="shortcut-item">
+                <span><i class="fas fa-print"></i> Print Page</span>
+                <span class="shortcut-key">Ctrl + P</span>
+            </div>
+            <div class="shortcut-item">
+                <span><i class="fas fa-times"></i> Close Overlays</span>
+                <span class="shortcut-key">Escape</span>
+            </div>
+            <button class="btn btn-primary" style="margin-top: 1.5rem; width: 100%;" onclick="closeShortcuts()">
+                <i class="fas fa-check"></i> Got it!
+            </button>
+        </div>
+    </div>
+
+    <!-- SCROLL TO TOP BUTTON -->
+    <button class="scroll-to-top" id="scrollToTop" onclick="scrollToTop()" aria-label="Scroll to Top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- QUICK ACCESS MENU -->
+    <div class="quick-access" id="quickAccess">
+        <button class="quick-btn" onclick="scrollToTop()" title="Scroll to Top">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        <button class="quick-btn" onclick="toggleTheme()" title="Toggle Theme">
+            <i class="fas fa-adjust"></i>
+        </button>
+    </div>
+
+    <!-- SINGLE THEME TOGGLE BUTTON -->
+    <div class="theme-toggle-container">
+        <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle Theme">
+            <i class="fas fa-moon theme-icon"></i>
+        </button>
+    </div>
+
+    <!-- YOUTUBE BUTTON -->
+    <a href="https://www.youtube.com/@chinmayavidyalayabokaro9965" 
+       target="_blank" 
+       class="youtube-button" 
+       title="Visit Chinmaya Vidyalaya Bokaro YouTube Channel">
+        <i class="fab fa-youtube youtube-icon"></i>
+        <span class="youtube-text">YOUTUBE</span>
+    </a>
+
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <div style="text-align: center;">
+                <div class="logo-3d">
+                    <div class="om-symbol">
+                        <div class="om-inner">ॐ</div>
+                    </div>
+                </div>
+                <div class="school-name">
+                    <h1>Chinmaya Vidyalaya</h1>
+                    <p>Bokaro Steel City</p>
+                </div>
+            </div>
+            
+            <div class="user-type-selector">
+                <button class="user-type-btn active" onclick="selectUserType('student')">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Student</span>
+                </button>
+                <button class="user-type-btn" onclick="selectUserType('teacher')">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>Teacher</span>
+                </button>
+            </div>
+            
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-id-card"></i> User ID</label>
+                    <input type="text" id="userId" placeholder="Enter ID (e.g., 3A001 or T001)" required autocomplete="username" pattern="[0-9A-G]{4,5}">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="password" placeholder="Enter password" required autocomplete="current-password" minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+            
+            <div id="loginAlert" class="hidden"></div>
+            
+            <div style="margin-top: 1.5rem; text-align: center; font-size: 0.8rem; color: var(--text-light);">
+                <p><strong>Quick Login:</strong></p>
+                <p>Student: Any ID like 3A001 (password same as ID)</p>
+                <p>Teacher: T001 / teacher123</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- STUDENT DASHBOARD -->
+    <div id="studentDashboard" class="dashboard hidden">
+        <div class="dash-header">
+            <div>
+                <h1><i class="fas fa-graduation-cap"></i> Student Portal</h1>
+                <p id="studentWelcome" style="opacity: 0.95; margin-top: 0.2rem; font-size: 0.85rem;">Welcome!</p>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar" id="studentAvatar" title="Click for profile" onclick="openPage('profile')">S</div>
+                <div style="margin-right: 0.6rem;">
+                    <div id="studentName" style="font-weight: 800; font-size: 0.9rem;">Student</div>
+                    <div id="studentClass" style="font-size: 0.75rem; opacity: 0.9;">Class</div>
+                </div>
+                <button class="btn-change-password" onclick="openChangePassword()">
+                    <i class="fas fa-key"></i> Pass
+                </button>
+                <button class="btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+        
+        <div class="dash-content">
+            <div class="welcome-banner">
+                <h2><i class="fas fa-rocket"></i> Welcome to Student Portal</h2>
+                <p style="font-size: 0.95rem;">
+                    <i class="fas fa-users"></i> 2800 Students | 
+                    <i class="fas fa-chalkboard"></i> Classes 3-9 | 
+                    <i class="fas fa-check-circle"></i> Complete Management
+                </p>
+            </div>
+            
+            <div class="menu-grid">
+                <div class="menu-card" onclick="openPage('assignments')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <h3>Assignments</h3>
+                    <p>MCQ Tests & Quizzes</p>
+                </div>
+                
+                <div class="menu-card" onclick="openPage('attendance')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h3>Attendance</h3>
+                    <p>Track your record</p>
+                </div>
+                
+                <div class="menu-card" onclick="openPage('timetable')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Timetable</h3>
+                    <p>Weekly schedule</p>
+                </div>
+                
+                <div class="menu-card" onclick="openPage('results')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #fa709a, #fee140);">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Results</h3>
+                    <p>View marks & grades</p>
+                </div>
+                
+                <div class="menu-card" onclick="openPage('studyMaterials')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3>Study Materials</h3>
+                    <p>Resources & notes</p>
+                </div>
+                
+                <div class="menu-card" onclick="openPage('homework')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #30cfd0, #330867);">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <h3>Homework</h3>
+                    <p>Daily assignments</p>
+                </div>
+                
+                <div class="menu-card" onclick="openPage('feePayment')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #a8edea, #fed6e3);">
+                        <i class="fas fa-rupee-sign"></i>
+                    </div>
+                    <h3>Fee Payment</h3>
+                    <p>Pay online</p>
+                </div>
+                
+                <div class="menu-card" onclick="openPage('library')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #ff9a9e, #fecfef);">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3>Library</h3>
+                    <p>E-Books & catalog</p>
+                </div>
+                
+                <div class="menu-card" onclick="openPage('events')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #fbc2eb, #a6c1ee);">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>Events</h3>
+                    <p>School activities</p>
+                </div>
+                
+                <div class="menu-card" onclick="openPage('announcements')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #fdcbf1, #e6dee9);">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <h3>Announcements</h3>
+                    <p>Latest updates</p>
+                </div>
+                
+                <div class="menu-card" onclick="openPage('certificates')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #ffecd2, #fcb69f);">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h3>Certificates</h3>
+                    <p>Achievements</p>
+                </div>
+                
+                <div class="menu-card" onclick="openPage('profile')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #ff9a56, #ff7676);">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3>My Profile</h3>
+                    <p>Personal details</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TEACHER DASHBOARD -->
+    <div id="teacherDashboard" class="dashboard hidden">
+        <div class="dash-header">
+            <div>
+                <h1><i class="fas fa-chalkboard-teacher"></i> Teacher Portal</h1>
+                <p id="teacherWelcome" style="opacity: 0.95; margin-top: 0.2rem; font-size: 0.85rem;">Welcome!</p>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar" id="teacherAvatar" title="Click for profile" onclick="openPage('teacherProfile')">T</div>
+                <div style="margin-right: 0.6rem;">
+                    <div id="teacherName" style="font-weight: 800; font-size: 0.9rem;">Teacher</div>
+                    <div id="teacherSubject" style="font-size: 0.75rem; opacity: 0.9;">Subject</div>
+                </div>
+                <button class="btn-change-password" onclick="openChangePassword()">
+                    <i class="fas fa-key"></i> Pass
+                </button>
+                <button class="btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+        
+        <div class="dash-content">
+            <div class="welcome-banner">
+                <h2><i class="fas fa-user-tie"></i> Teacher Dashboard</h2>
+                <p style="font-size: 0.95rem;">
+                    <i class="fas fa-users"></i> Manage 2800 Students | 
+                    <i class="fas fa-cogs"></i> Complete Control | 
+                    <i class="fas fa-graduation-cap"></i> All Features
+                </p>
+            </div>
+            
+            <div class="menu-grid">
+                <div class="menu-card" onclick="openPage('myTimetable')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>My Timetable</h3>
+                    <p>Teaching schedule</p>
+                </div>
+                
+                <div class="menu-card" onclick="openPage('markAttendance')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <h3>Mark Attendance</h3>
+                    <p>Daily attendance</p>
+                </div>
+                
+                <div class="menu-card" onclick="openPage('createAssignment')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <h3>Create Assignment</h3>
+                    <p>MCQ tests</p>
+                </div>
+                
+                <div class="menu-card" onclick="openPage('enterMarks')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #fa709a, #fee140);">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <h3>Enter Marks</h3>
+                    <p>Exam results</p>
+                </div>
+                
+                <div class="menu-card" onclick="openPage('uploadMaterials')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                        <i class="fas fa-upload"></i>
+                    </div>
+                    <h3>Upload Materials</h3>
+                    <p>Study resources</p>
+                </div>
+                
+                <div class="menu-card" onclick="openPage('assignHomework')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #30cfd0, #330867);">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <h3>Assign Homework</h3>
+                    <p>Daily tasks</p>
+                </div>
+                
+                <div class="menu-card" onclick="openPage('viewReports')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #a8edea, #fed6e3);">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3>View Reports</h3>
+                    <p>Analytics</p>
+                </div>
+                
+                <div class="menu-card" onclick="openPage('teacherProfile')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #ff9a9e, #fecfef);">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>My Profile</h3>
+                    <p>Personal info</p>
+                </div>
+                
+                <div class="menu-card" onclick="openPage('importStudents')">
+                    <div class="menu-card-icon" style="background: linear-gradient(135deg, #a78bfa, #c084fc);">
+                        <i class="fas fa-file-import"></i>
+                    </div>
+                    <h3>Import Students</h3>
+                    <p>Upload student data</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ALL PAGE CONTAINERS -->
+    <div id="myTimetablePage" class="full-page"></div>
+    <div id="markAttendancePage" class="full-page"></div>
+    <div id="timetablePage" class="full-page"></div>
+    <div id="assignmentsPage" class="full-page"></div>
+    <div id="createAssignmentPage" class="full-page"></div>
+    <div id="attendancePage" class="full-page"></div>
+    <div id="resultsPage" class="full-page"></div>
+    <div id="studyMaterialsPage" class="full-page"></div>
+    <div id="homeworkPage" class="full-page"></div>
+    <div id="feePaymentPage" class="full-page"></div>
+    <div id="libraryPage" class="full-page"></div>
+    <div id="uploadMaterialsPage" class="full-page"></div>
+    <div id="assignHomeworkPage" class="full-page"></div>
+    <div id="enterMarksPage" class="full-page"></div>
+    <div id="eventsPage" class="full-page"></div>
+    <div id="announcementsPage" class="full-page"></div>
+    <div id="certificatesPage" class="full-page"></div>
+    <div id="profilePage" class="full-page"></div>
+    <div id="viewReportsPage" class="full-page"></div>
+    <div id="teacherProfilePage" class="full-page"></div>
+    <div id="importStudentsPage" class="full-page"></div>
+
+    <!-- CHANGE PASSWORD MODAL -->
+    <div id="changePasswordModal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 1.3rem;">
+                <i class="fas fa-key"></i> Change Password
+            </h2>
+            <form onsubmit="handleChangePassword(event)">
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <input type="password" id="currentPassword" required autocomplete="current-password" minlength="6">
+                </div>
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" id="newPassword" required minlength="6" autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                    <label>Confirm New Password</label>
+                    <input type="password" id="confirmPassword" required autocomplete="new-password">
+                </div>
+                <div style="display: flex; gap: 0.7rem;">
+                    <button type="submit" class="btn btn-primary" styl
